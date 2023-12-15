@@ -1,4 +1,5 @@
 import { LocalDate } from '@js-joda/core';
+import { HolidayError } from '@app/domain/model/errors/holiday.error';
 
 export class Holiday {
   private readonly _date: LocalDate;
@@ -6,7 +7,7 @@ export class Holiday {
 
   constructor(date: LocalDate, name: string) {
     if (!(date && name)) {
-      throw new Error('cannot have a null attribute');
+      throw new HolidayError('cannot have a null attribute date or name');
     }
     this._date = date;
     this._name = name;

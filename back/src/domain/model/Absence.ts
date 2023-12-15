@@ -3,13 +3,14 @@ import { Percentage } from '@app/domain/percentage.type';
 import { LocalDate } from '@js-joda/core';
 import { Activity } from '@app/domain/model/Activity';
 import { AbsenceRule } from '@app/domain/model/AbsenceRule';
+import { AbsenceError } from '@app/domain/model/errors/absence.error';
 
 export class Absence extends Activity {
   private readonly _raison: Raison;
   constructor(percentage: Percentage, date: LocalDate, raison: Raison) {
     super(percentage, date);
     if (raison == null) {
-      throw new Error('cannot have a null attribute');
+      throw new AbsenceError('cannot have a null attribute reason');
     }
     this._raison = raison;
     this.addActivityRule(new AbsenceRule());
@@ -21,7 +22,7 @@ export class Absence extends Activity {
 
   static fromJson(json: any): Absence {
     if (!json) {
-      throw new Error('Invalid JSON data');
+      throw new AbsenceError('Invalid JSON data');
     }
 
     return new Absence(

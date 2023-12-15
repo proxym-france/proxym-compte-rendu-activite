@@ -7,6 +7,7 @@ import { EnhancedOmit, InferIdType } from 'mongodb';
 import { ProjectCode } from '@app/domain/model/project.code';
 import { CollabEmail } from '@app/domain/model/collab.email';
 import { USER_COLLECTION } from '@app/repositories/collab.repository';
+import { ProjectError } from '@app/domain/model/errors/project.error';
 
 export const PROJECT_COLLECTION = 'projects';
 
@@ -43,7 +44,7 @@ export class ProjectRepository implements IRepoProject {
     });
 
     if (!projectDoc) {
-      throw new Error('Project not found');
+      throw new ProjectError('Project not found');
     }
 
     return this.mapProject(projectDoc);
@@ -65,7 +66,7 @@ export class ProjectRepository implements IRepoProject {
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
   findLikeById(id: ProjectCode): Promise<Project[]> {
-    throw new Error('Operation not implemented');
+    throw new ProjectError('Operation not implemented');
   }
 
   async save(project: Project): Promise<void> {
@@ -90,7 +91,9 @@ export class ProjectRepository implements IRepoProject {
       .toArray();
 
     if (foundCollabs.length !== project.collabs.length) {
-      throw new Error('Trying to insert a user that is not present');
+      throw new ProjectError(
+        'Trying to assign a user that is not registered in the system',
+      );
     }
 
     const count = await collection.countDocuments({

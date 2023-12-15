@@ -53,8 +53,11 @@ export class ProjectV2Controller {
   @ApiBody({
     type: ProjectDto,
   })
-  async addProject(@Body() projectDto: ProjectDto): Promise<void> {
+  async addProject(@Body() projectDto: ProjectDto): Promise<any> {
     await this.craApplication.addProject(mapToDomain(projectDto));
+    return {
+      message: 'OK',
+    };
   }
 
   @Get('/:id')

@@ -3,6 +3,7 @@ import { ProjectCode } from '@app/domain/model/project.code';
 import { CollabEmail } from '@app/domain/model/collab.email';
 import { Transform } from 'class-transformer';
 import { LocalDate } from '@js-joda/core';
+import { ProjectError } from '@app/domain/model/errors/project.error';
 
 export class Project {
   // @Transform((params) => params.value.map((item) => item.value))
@@ -22,7 +23,7 @@ export class Project {
     status: ProjectStatus,
   ) {
     if (!(code && collabs)) {
-      throw new Error('cannot have a null attribut');
+      throw new ProjectError('cannot have a null attribute code / employees');
     }
     this._code = code;
     this._collabs = collabs;

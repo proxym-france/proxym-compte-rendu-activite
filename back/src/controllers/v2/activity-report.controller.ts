@@ -33,13 +33,17 @@ export class ActivityReportController {
   @ApiBody({
     type: ActivityReportDto,
   })
-  async postBulk(@Body() activityReport: ActivityReportDto) {
+  async postBulk(@Body() activityReport: ActivityReportDto): Promise<any> {
     await this.craApp.bulkAdd(
       new CollabEmail(activityReport.employeeEmail),
       activityReport.month,
       activityReport.year,
       activityReport.activities,
     );
+
+    return {
+      message: 'OK',
+    };
   }
 
   @ApiParam({

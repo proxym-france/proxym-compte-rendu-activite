@@ -21,6 +21,7 @@ import {
 } from '@js-joda/core';
 import { Interval } from '@js-joda/extra';
 import { ProjectActivity } from '@app/domain/model/ProjectActivity';
+import { ActivityReportError } from '@app/domain/model/errors/activity-report.error';
 
 export type BulkAddOptions = {
   replace: boolean;
@@ -136,10 +137,16 @@ export class CRA {
     );
 
     if (badHoliday != undefined) {
-      throw new Error(
-        'Trying to add a holiday that is not for this CRA: ' +
-          JSON.stringify(badHoliday),
+      const activityReportError = new ActivityReportError(
+        `Trying to add a holiday that is not for this activity report's month`,
       );
+      console.error(
+        'Activity report error {}',
+        JSON.stringify(badHoliday),
+        activityReportError,
+      );
+
+      throw activityReportError;
     }
     this._holidays = holidays;
   }
@@ -153,14 +160,14 @@ export class CRA {
     //check if holiday
     this.holidays.forEach((holiday) => {
       if (holiday.date.equals(activityDate)) {
-        throw Error('it is a holiday :' + holiday.name);
+        throw new ActivityReportError('it is a holiday : ' + holiday.name);
       }
     });
 
     // Test if the day is already fully occupied or part of a fully occupied period
     if (this.getAvailableTime(activityDate) < activity.percentage) {
       //cra
-      throw new Error('FULL day or period');
+      throw new ActivityReportError('FULL day or period');
     }
 
     //test if you have the right to add according to the date constraint
@@ -172,7 +179,7 @@ export class CRA {
       activity instanceof ProjectActivity &&
       this.isExistingProjectActivity(activity)
     ) {
-      throw new Error(
+      throw new ActivityReportError(
         `There is already an activity for project "${
           activity.project
         }" for this date "${activity.date.toString()}"`,

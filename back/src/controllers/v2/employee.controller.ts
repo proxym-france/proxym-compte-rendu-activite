@@ -58,7 +58,7 @@ export class EmployeeController {
   @ApiBody({
     type: CreateEmployeeDto,
   })
-  async addCollab(@Body() employeeDto: CreateEmployeeDto): Promise<void> {
+  async addCollab(@Body() employeeDto: CreateEmployeeDto): Promise<any> {
     const collab = new Collab(
       new CollabEmail(employeeDto.email),
       employeeDto.name,
@@ -67,5 +67,9 @@ export class EmployeeController {
       employeeDto.projects.map((project) => new ProjectCode(project)),
     );
     await this.craApplication.addCollab(collab);
+
+    return {
+      message: 'OK',
+    };
   }
 }

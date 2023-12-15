@@ -15,9 +15,9 @@
     "ignorePatterns": ["**/build/", "**/*.config.js", "**/dist/**", "**/cra-docs/", ".eslintrc.js"],
     "overrides": [
         {
-            "files": ["back/src/dtos/*.ts"],
+            "files": ["back/src/domain/**/*.ts"],
             "rules": {
-                "no-restricted-globals": ["off", "event", "Date"]
+                "no-restricted-globals": ["error", "event", "Date", "Error"]
             }
         }
     ],

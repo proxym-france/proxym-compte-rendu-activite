@@ -19,6 +19,8 @@ import { Activity } from '@app/domain/model/Activity';
 import { ActivityDtoType, ProjectActivitiesDto } from '@app/dtos/activity.dto';
 import { LocalDate, Month } from '@js-joda/core';
 import { ProjectActivity } from '@app/domain/model/ProjectActivity';
+import { ApplicationError } from '@app/domain/application/errors/application.error';
+import { ActivityReportError } from '@app/domain/model/errors/activity-report.error';
 
 @Injectable()
 export class CraApplication {
@@ -150,12 +152,22 @@ export class CraApplication {
     replace = false,
   ) {
     const toAdd = new Array<Activity | Absence>();
+    const projects = await this.getProjectsByUser(idUser);
 
     for (const projectActivity of activities) {
       for (const activityDto of projectActivity.activities) {
         const date = LocalDate.parse(activityDto.date);
 
         if (activityDto.type === ActivityDtoType.project) {
+          const existingProject = projects.find(
+            (proj) => proj.code.value === projectActivity.projectCode,
+          );
+
+          if (!existingProject) {
+            throw new ActivityReportError(
+              `Cannot report activity, Project "${projectActivity.projectCode}" is not assigned to user ${idUser}`,
+            );
+          }
           toAdd.push(
             new ProjectActivity(
               new ProjectCode(projectActivity.projectCode),
@@ -221,7 +233,9 @@ export class CraApplication {
     const cras = await this.craRepository.findByMonthYear(month, year);
     const crasUnsubmitted = cras.filter((cra) => cra.etat == Etat.unsubmitted);
     if (crasUnsubmitted.length > 0) {
-      throw new Error('cannot close month: there is an unsubmitted cra');
+      throw new ApplicationError(
+        'cannot close month: there is an un-submitted activity report',
+      );
     }
     cras.forEach((cra) => {
       cra.closeCra();
@@ -243,8 +257,8 @@ export class CraApplication {
     const collabPromise = await this.collabRepository.findById(user);
 
     if (collabPromise === undefined) {
-      throw new Error(
-        `Cannot create new CRA for an unknown collab ${user.value}`,
+      throw new ApplicationError(
+        `Cannot create new CRA for an unknown employee ${user.value}`,
       );
     }
 

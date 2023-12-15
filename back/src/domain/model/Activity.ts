@@ -4,6 +4,7 @@ import { ActivityRule } from '@app/domain/model/ActivityRule';
 import { NotWeekendRule } from '@app/domain/model/NotWeekendRule';
 import { CRAClosureRule } from '@app/domain/model/CRAClosureRule';
 import { Interval } from '@js-joda/extra';
+import { ActivityError } from '@app/domain/model/errors/activity.error';
 
 export abstract class Activity {
   protected readonly _percentage: Percentage;
@@ -12,10 +13,10 @@ export abstract class Activity {
 
   protected constructor(percentage: Percentage, date: LocalDate) {
     if (date == null) {
-      throw new Error('cannot have a null attribute');
+      throw new ActivityError('cannot have a null attribute date');
     }
     if (percentage == null) {
-      throw new Error('cannot have a null attribute');
+      throw new ActivityError('cannot have a null attribute percentage');
     }
     this._percentage = percentage;
     this._date = date;

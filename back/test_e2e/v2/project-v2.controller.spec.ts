@@ -46,7 +46,7 @@ describe('Project Controller', () => {
     const projectDto = new ProjectDto();
     projectDto.name = 'New project';
     projectDto.status = ProjectStatus.Active;
-    projectDto.collabs = [];
+    projectDto.employees = [];
     projectDto.code = 'new_proj_01';
     projectDto.client = '';
 
@@ -124,7 +124,7 @@ describe('Project Controller', () => {
     const projectDto = new ProjectDto();
     projectDto.name = 'New project';
     projectDto.status = ProjectStatus.Active;
-    projectDto.collabs = ['unknown@proxym.fr', clientId.value];
+    projectDto.employees = ['unknown@proxym.fr', clientId.value];
     projectDto.code = 'new_proj_01';
     projectDto.client = '';
 
@@ -149,7 +149,7 @@ describe('Project Controller', () => {
     );
 
     const projectDto = mapProject(savedProject);
-    projectDto.collabs = [...projectDto.collabs, 'unknown@proxym.fr'];
+    projectDto.employees = [...projectDto.employees, 'unknown@proxym.fr'];
 
     const response = await request(getApp().getHttpServer())
       .post(PROJECT_URI)

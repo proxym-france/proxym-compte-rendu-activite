@@ -9,7 +9,7 @@ export class ActivityReportDto {
   @ValidateNested({ each: true })
   @ApiProperty({
     description: 'List of activities per project.',
-    type: ProjectActivitiesDto,
+    type: [ProjectActivitiesDto],
   })
   activities: ProjectActivitiesDto[];
 

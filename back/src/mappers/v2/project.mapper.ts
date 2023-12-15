@@ -1,7 +1,7 @@
-import { Project } from '../../domain/model/Project';
-import { ProjectDto } from '../../dtos/project.dto';
-import { ProjectCode } from '../../domain/model/project.code';
-import { CollabEmail } from '../../domain/model/collab.email';
+import { Project } from '@app/domain/model/Project';
+import { ProjectDto } from '@app/dtos/project.dto';
+import { ProjectCode } from '@app/domain/model/project.code';
+import { CollabEmail } from '@app/domain/model/collab.email';
 import { LocalDate } from '@js-joda/core';
 
 export const mapProject = (proj: Project) => {
@@ -9,7 +9,7 @@ export const mapProject = (proj: Project) => {
   projectDto.code = proj.code.value;
   projectDto.client = proj.client;
   projectDto.date = proj.date.toString();
-  projectDto.collabs = proj.collabs.map((collabMail) => collabMail.value);
+  projectDto.employees = proj.collabs.map((collabMail) => collabMail.value);
   projectDto.name = proj.name;
   projectDto.status = proj.status;
 
@@ -19,7 +19,7 @@ export const mapProject = (proj: Project) => {
 export const mapToDomain = (proj: ProjectDto) => {
   return new Project(
     new ProjectCode(proj.code),
-    proj.collabs.map((collabString) => new CollabEmail(collabString)),
+    proj.employees.map((collabString) => new CollabEmail(collabString)),
     proj.name,
     proj.client,
     proj.date ? LocalDate.parse(proj.date) : LocalDate.now(),

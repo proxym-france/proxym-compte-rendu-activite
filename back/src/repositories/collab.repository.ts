@@ -3,6 +3,7 @@ import { IRepoCollab } from '@app/domain/IRepository/IRepoCollab';
 import { MongoClientWrapper } from '@app/mongo/mongo.client.wrapper';
 import { Collab } from '@app/domain/model/Collab';
 import { CollabEmail } from '@app/domain/model/collab.email';
+import { UserError } from '@app/domain/model/errors/user.error';
 
 export const USER_COLLECTION = 'users';
 
@@ -64,6 +65,14 @@ export class CollabRepository implements IRepoCollab {
       ...user,
     };
 
-    await this.wrapper.getCollection(USER_COLLECTION).insertOne(doc);
+    try {
+      await this.wrapper.getCollection(USER_COLLECTION).insertOne(doc);
+    } catch (error: any) {
+      // duplicate error in mongo code
+      if (error.message.includes('E11000')) {
+        throw new UserError(`Duplicate user with code ${user.email.value}`);
+      }
+      throw error;
+    }
   }
 }

@@ -64,7 +64,7 @@ export class ProjectActivitiesDto {
   projectCode: string;
 
   @ApiProperty({
-    type: ActivityDto,
+    type: [ActivityDto],
   })
   @Type(() => ActivityDto)
   @ValidateNested({ each: true })
